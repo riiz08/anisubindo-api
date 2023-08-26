@@ -13,7 +13,7 @@ const port = 5000;
 app.use(cors());
 
 app.get("/", (req, res) => {
-  res.send("hello world");
+  res.send("hello im riiz");
 });
 
 app.get("/popular-today", async (req, res) => {

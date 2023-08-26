@@ -19,7 +19,7 @@ const app = (0, express_1.default)();
 const port = 5000;
 app.use((0, cors_1.default)());
 app.get("/", (req, res) => {
-    res.send("hello world");
+    res.send("hello im riiz");
 });
 app.get("/popular-today", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
