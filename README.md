@@ -215,3 +215,44 @@ Output >>
 	]
  ]
 ```
+
+### Get Stream URL
+
+| Parameter | Description |
+| --------- | ----------- |
+| `slug`    | required    |
+
+```js
+fetch("https://localhost:5000/watch/:slug")
+  .then((response) => response.json())
+  .then((result) => console.log(result));
+```
+
+Output >>
+
+```json
+{
+  "status": "success",
+  "statusCode": 200,
+  "data": [
+	{
+		"episode_title": "Rurouni Kenshin 2023 Episode 08 Subtitle Indonesia",
+		"stream_url": "https://www.blogger.com/video.g?token=AD6v5dzPFvOJkrOWYVxxUtBqvywIXeGv2_gzltpfQOk-6BhxdcqCFyzDqGa-u61QPiMWf5zBExuOYZ3BJ-qI8eXRF3HXTSdTlDqBm0TuUOhZ30c1R668-SH3Xl_MxZf4bATqZzS9PLg",
+		"title": "Rurouni Kenshin -Meiji Kenkaku Romantan- (2023) Subtittle Indonesia",
+		"status": "Ongoing",
+		"studio": "LIDENFILMS",
+		"duration": "23 min. per ep.",
+		"season": "Summer 2023",
+		"type": "TV",
+		"genres": [
+			"Action",
+			"Historical",
+			"Martial Arts",
+			"Romance",
+			"Shounen"
+		],
+		"desc": ...
+		},
+    ]
+}
+```
