@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDetailAnime = exports.filteringAnime = exports.getLatestRelease = exports.getMostPopularToday = void 0;
+exports.getStreamUrl = exports.getDetailAnime = exports.filteringAnime = exports.getLatestRelease = exports.getMostPopularToday = void 0;
 const axios_1 = __importDefault(require("axios"));
 const cheerio_1 = __importDefault(require("cheerio"));
 const createSlug = (text) => {
@@ -206,3 +206,48 @@ const getDetailAnime = (slug) => __awaiter(void 0, void 0, void 0, function* () 
     return result;
 });
 exports.getDetailAnime = getDetailAnime;
+const getStreamUrl = (slug) => __awaiter(void 0, void 0, void 0, function* () {
+    const url = "https://oploverz.fit/";
+    const response = yield axios_1.default.get(url + slug).then((res) => {
+        const html = res.data;
+        const $ = cheerio_1.default.load(html);
+        const thisParent = $(".postbody");
+        const childrenParent = $(".single-info");
+        const parentElem = $(".postbody").find(".spe");
+        const episode_title = thisParent.find("h1").text();
+        const stream_url = thisParent.find("iframe").attr("src");
+        const title = childrenParent.find("h2").text();
+        const status = filterSpan(parentElem, "Status:");
+        const studio = filterSpan(parentElem, "Studio:");
+        const duration = filterSpan(parentElem, "Durasi:");
+        const season = filterSpan(parentElem, "Season:");
+        const type = filterSpan(parentElem, "Tipe:");
+        const genresElement = $(".genxed");
+        const genresText = genresElement
+            .find("a")
+            .map(function (i, element) {
+            const self = $(element);
+            return self.text().trim();
+        })
+            .get();
+        const genres = genresText;
+        const desc = childrenParent.find(".mindes").text().replace(/\t|\n/g, "");
+        const index = [
+            {
+                episode_title,
+                stream_url,
+                title,
+                status,
+                studio,
+                duration,
+                season,
+                type,
+                genres,
+                desc
+            },
+        ];
+        return index;
+    });
+    return response;
+});
+exports.getStreamUrl = getStreamUrl;

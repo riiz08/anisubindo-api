@@ -122,4 +122,23 @@ app.get("/detail/:slug", function (req, res) { return __awaiter(void 0, void 0, 
         }
     });
 }); });
+app.get("/watch/:slug", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var slug, data, e_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                slug = req.params.slug;
+                return [4 /*yield*/, (0, service_1.getStreamUrl)(slug)];
+            case 1:
+                data = _a.sent();
+                return [2 /*return*/, res.json(data)];
+            case 2:
+                e_3 = _a.sent();
+                res.send(e_3.message);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
 app.listen(port, function () { return console.log("app running in port : ".concat(port)); });

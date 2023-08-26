@@ -55,4 +55,14 @@ app.get("/detail/:slug", (req, res) => __awaiter(void 0, void 0, void 0, functio
     const data = yield (0, service_1.getDetailAnime)(slug);
     res.json(data);
 }));
+app.get("/watch/:slug", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { slug } = req.params;
+        const data = yield (0, service_1.getStreamUrl)(slug);
+        return res.json(data);
+    }
+    catch (e) {
+        res.send(e.message);
+    }
+}));
 app.listen(port, () => console.log(`app running in port : ${port}`));

@@ -200,7 +200,7 @@ export const getDetailAnime = async (slug: any) => {
       const listEp = $(".eplister").find("ul li");
       let episode_lists: any = [];
       listEp.each(function (i, element) {
-        const self = $(element)
+        const self = $(element);
         const epTitle = self.find(".epl-title").text();
         const epNumb = self.find(".epl-num").text();
 
@@ -235,4 +235,53 @@ export const getDetailAnime = async (slug: any) => {
       throw new Error(e.message);
     });
   return result;
+};
+
+export const getStreamUrl = async (slug: String) => {
+  const url = "https://oploverz.fit/";
+  const response = await axios.get(url + slug).then((res) => {
+    const html = res.data;
+    const $ = cheerio.load(html);
+    const thisParent = $(".postbody");
+    const childrenParent = $(".single-info");
+    const parentElem = $(".postbody").find(".spe");
+
+    const episode_title = thisParent.find("h1").text();
+    const stream_url = thisParent.find("iframe").attr("src");
+    const title = childrenParent.find("h2").text();
+    const status = filterSpan(parentElem, "Status:");
+    const studio = filterSpan(parentElem, "Studio:");
+    const duration = filterSpan(parentElem, "Durasi:");
+    const season = filterSpan(parentElem, "Season:");
+    const type = filterSpan(parentElem, "Tipe:");
+    const genresElement = $(".genxed");
+    const genresText = genresElement
+      .find("a")
+      .map(function (i, element) {
+        const self = $(element);
+        return self.text().trim();
+      })
+      .get();
+    const genres = genresText;
+    const desc = childrenParent.find(".mindes").text().replace(/\t|\n/g, "");
+
+
+    const index = [
+      {
+        episode_title,
+        stream_url,
+        title,
+        status,
+        studio,
+        duration,
+        season,
+        type,
+        genres,
+        desc
+      },
+    ];
+
+    return index;
+  });
+  return response;
 };

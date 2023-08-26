@@ -5,6 +5,7 @@ import {
   getLatestRelease,
   filteringAnime,
   getDetailAnime,
+  getStreamUrl,
 } from "./service";
 
 const app = express();
@@ -59,6 +60,16 @@ app.get("/detail/:slug", async (req, res) => {
   const { slug } = req.params;
   const data = await getDetailAnime(slug);
   res.json(data);
+});
+
+app.get("/watch/:slug", async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const data = await getStreamUrl(slug);
+    return res.json(data);
+  } catch (e: any) {
+ res.send(e.message);
+  }
 });
 
 app.listen(port, () => console.log(`app running in port : ${port}`));
