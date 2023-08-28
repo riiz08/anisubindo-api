@@ -256,3 +256,34 @@ Output >>
     ]
 }
 ```
+
+### Search Anime
+
+| Parameter | Description |
+| --------- | ----------- |
+| `query`   | required    |
+
+```js
+fetch("https://localhost:5000/search?query={query}")
+  .then((response) => response.json())
+  .then((result) => console.log(result));
+```
+
+Output >>
+
+```json
+{
+"search": "jujutsu",
+"data": [
+{
+"title": "Jujutsu Kaisen S2",
+"type": "TV",
+"episode": "Ongoing",
+"image": "http://i3.wp.com/oploverz.fit/wp-content/uploads/2023/06/1687337587-2811-134703.jpg?resize=247,350",
+"slug": "jujutsu-kaisen-s2"
+},
+{...}
+]
+}
+
+```

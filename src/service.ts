@@ -2,15 +2,15 @@ import axios from "axios";
 import cheerio from "cheerio";
 
 interface Item {
-  title: string | undefined;
+  title?: string;
   type: string;
   episode: string;
-  image: string | undefined;
-  slug: string | undefined;
+  image?: string;
+  slug?: string;
   rating?: string | number;
 }
 
-const createSlug = (text: string | undefined) => {
+const createSlug = (text?: string) => {
   if (text != undefined) {
     return text
       .toString() // Mengonversi input ke string (jika bukan string)
@@ -23,7 +23,7 @@ const createSlug = (text: string | undefined) => {
   }
 };
 
-const filterSpan = (parent: any, content: string) => {
+const filterSpan = (parent: cheerio.Cheerio, content: string) => {
   const res = parent
     .find(`span:contains(${content})`)
     .text()
@@ -49,7 +49,7 @@ export const getMostPopularToday = async () => {
         const type: string = self.find(".eggtype").text();
         const episode: string = self.find(".eggepisode").text();
         const image: string | undefined = self.find("img").attr("src");
-        const slug = createSlug(self.find("h2").text()) || "slug-not-found";
+        const slug: string | undefined = createSlug(self.find("h2").text());
 
         index.push({
           title,
@@ -68,7 +68,7 @@ export const getMostPopularToday = async () => {
   return result;
 };
 
-export const getLatestRelease = async (page: string | number) => {
+export const getLatestRelease = async (page: string | number = "1") => {
   const url: string = "https://oploverz.fit";
 
   const result = await axios.get(url + "/page/" + page).then((res) => {
@@ -85,8 +85,8 @@ export const getLatestRelease = async (page: string | number) => {
       const type: string = self.find(".typez").text();
       const episode: string = self.find(".epx").text();
       const image: string | undefined = self.find("img").attr("src");
-      const slug = createSlug(title) || "slug-not-found";
-      const rating: string | number = self.find(".scr").text();
+      const slug: string | undefined = createSlug(title);
+      const rating: string = self.find(".scr").text();
 
       index.push({
         title,
@@ -105,7 +105,7 @@ export const getLatestRelease = async (page: string | number) => {
 };
 
 export const filteringAnime = async (
-  page: any | 1,
+  page: any,
   genre: any,
   season: any,
   studio: any,
@@ -265,7 +265,6 @@ export const getStreamUrl = async (slug: String) => {
     const genres = genresText;
     const desc = childrenParent.find(".mindes").text().replace(/\t|\n/g, "");
 
-
     const index = [
       {
         episode_title,
@@ -277,9 +276,39 @@ export const getStreamUrl = async (slug: String) => {
         season,
         type,
         genres,
-        desc
+        desc,
       },
     ];
+
+    return index;
+  });
+  return response;
+};
+
+export const searchAnime = async (search: any) => {
+  const url = "https://oploverz.fit";
+  const response = await axios.get(url + "/?s=" + search).then((res) => {
+    const html = res.data;
+    const $ = cheerio.load(html);
+    let index: Item[] = [];
+    const list = $("article.bs");
+
+    list.each(function (i, elem) {
+      const self: cheerio.Cheerio = $(elem);
+      const title = self.find("a").attr("title");
+      const type: string = self.find(".typez").text();
+      const episode: string = self.find(".epx").text();
+      const image: string | undefined = self.find("img").attr("src");
+      const slug: string | undefined = createSlug(title);
+
+      index.push({
+        title,
+        type,
+        episode,
+        image,
+        slug
+      });
+    });
 
     return index;
   });

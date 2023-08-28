@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getStreamUrl = exports.getDetailAnime = exports.filteringAnime = exports.getLatestRelease = exports.getMostPopularToday = void 0;
+exports.searchAnime = exports.getStreamUrl = exports.getDetailAnime = exports.filteringAnime = exports.getLatestRelease = exports.getMostPopularToday = void 0;
 const axios_1 = __importDefault(require("axios"));
 const cheerio_1 = __importDefault(require("cheerio"));
 const createSlug = (text) => {
@@ -49,7 +49,7 @@ const getMostPopularToday = () => __awaiter(void 0, void 0, void 0, function* ()
             const type = self.find(".eggtype").text();
             const episode = self.find(".eggepisode").text();
             const image = self.find("img").attr("src");
-            const slug = createSlug(self.find("h2").text()) || "slug-not-found";
+            const slug = createSlug(self.find("h2").text());
             index.push({
                 title,
                 type,
@@ -66,7 +66,7 @@ const getMostPopularToday = () => __awaiter(void 0, void 0, void 0, function* ()
     return result;
 });
 exports.getMostPopularToday = getMostPopularToday;
-const getLatestRelease = (page) => __awaiter(void 0, void 0, void 0, function* () {
+const getLatestRelease = (page = "1") => __awaiter(void 0, void 0, void 0, function* () {
     const url = "https://oploverz.fit";
     const result = yield axios_1.default.get(url + "/page/" + page).then((res) => {
         const html = res.data;
@@ -79,7 +79,7 @@ const getLatestRelease = (page) => __awaiter(void 0, void 0, void 0, function* (
             const type = self.find(".typez").text();
             const episode = self.find(".epx").text();
             const image = self.find("img").attr("src");
-            const slug = createSlug(title) || "slug-not-found";
+            const slug = createSlug(title);
             const rating = self.find(".scr").text();
             index.push({
                 title,
@@ -243,7 +243,7 @@ const getStreamUrl = (slug) => __awaiter(void 0, void 0, void 0, function* () {
                 season,
                 type,
                 genres,
-                desc
+                desc,
             },
         ];
         return index;
@@ -251,3 +251,30 @@ const getStreamUrl = (slug) => __awaiter(void 0, void 0, void 0, function* () {
     return response;
 });
 exports.getStreamUrl = getStreamUrl;
+const searchAnime = (search) => __awaiter(void 0, void 0, void 0, function* () {
+    const url = "https://oploverz.fit";
+    const response = yield axios_1.default.get(url + "/?s=" + search).then((res) => {
+        const html = res.data;
+        const $ = cheerio_1.default.load(html);
+        let index = [];
+        const list = $("article.bs");
+        list.each(function (i, elem) {
+            const self = $(elem);
+            const title = self.find("a").attr("title");
+            const type = self.find(".typez").text();
+            const episode = self.find(".epx").text();
+            const image = self.find("img").attr("src");
+            const slug = createSlug(title);
+            index.push({
+                title,
+                type,
+                episode,
+                image,
+                slug
+            });
+        });
+        return index;
+    });
+    return response;
+});
+exports.searchAnime = searchAnime;

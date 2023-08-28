@@ -19,7 +19,7 @@ const app = (0, express_1.default)();
 const port = 5000;
 app.use((0, cors_1.default)());
 app.get("/", (req, res) => {
-    res.send("hello im riiz");
+    res.send("Server is running 🏃");
 });
 app.get("/popular-today", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -31,7 +31,7 @@ app.get("/popular-today", (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 }));
 app.get("/latest-release", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const page = Number(req.query.page) || 1;
+    const page = Number(req.query.page);
     try {
         const data = yield (0, service_1.getLatestRelease)(page);
         res.json(data);
@@ -63,6 +63,19 @@ app.get("/watch/:slug", (req, res) => __awaiter(void 0, void 0, void 0, function
     }
     catch (e) {
         res.send(e.message);
+    }
+}));
+app.get("/search", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { query } = yield req.query;
+        const data = yield (0, service_1.searchAnime)(query);
+        res.json({
+            search: query,
+            data,
+        });
+    }
+    catch (e) {
+        throw new Error(e.message);
     }
 }));
 app.listen(port, () => console.log(`app running in port : ${port}`));

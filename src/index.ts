@@ -6,6 +6,7 @@ import {
   filteringAnime,
   getDetailAnime,
   getStreamUrl,
+  searchAnime,
 } from "./service";
 
 const app = express();
@@ -14,7 +15,7 @@ const port = 5000;
 app.use(cors());
 
 app.get("/", (req, res) => {
-  res.send("hello im riiz");
+  res.send("Server is running 🏃");
 });
 
 app.get("/popular-today", async (req, res) => {
@@ -27,7 +28,7 @@ app.get("/popular-today", async (req, res) => {
 });
 
 app.get("/latest-release", async (req, res) => {
-  const page: number = Number(req.query.page) || 1;
+  const page: number = Number(req.query.page);
   try {
     const data = await getLatestRelease(page);
     res.json(data);
@@ -38,6 +39,7 @@ app.get("/latest-release", async (req, res) => {
 
 app.get("/anime/", async (req, res) => {
   const { page, genre, season, studio, status, type, sub, order } = req.query;
+
   try {
     const data = await filteringAnime(
       page,
@@ -68,7 +70,22 @@ app.get("/watch/:slug", async (req, res) => {
     const data = await getStreamUrl(slug);
     return res.json(data);
   } catch (e: any) {
- res.send(e.message);
+    res.send(e.message);
+  }
+});
+
+app.get("/search", async (req, res) => {
+  try {
+    const { query } = await req.query;
+    const data = await searchAnime(query);
+
+    res.json({
+     
+      search: query,
+      data,
+    });
+  } catch (e: any) {
+    throw new Error(e.message);
   }
 });
 
