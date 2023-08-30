@@ -11,9 +11,6 @@ import {
 
 const app = express();
 const port = 5000;
-axios.defaults.validateStatus = () => true;
-axios.defaults.headers.common["User-Agent"] =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.54";
 
 app.use(cors());
 
@@ -31,7 +28,7 @@ app.get("/popular-today", async (req, res) => {
 });
 
 app.get("/latest-release", async (req, res) => {
-  const page: number = Number(req.query.page);
+  const page: number = Number(req.query.page) || 1;
   try {
     const data = await getLatestRelease(page);
     res.json(data);
@@ -79,11 +76,10 @@ app.get("/watch/:slug", async (req, res) => {
 
 app.get("/search", async (req, res) => {
   try {
-    const { query } = await req.query;
+    const { query } = req.query;
     const data = await searchAnime(query);
 
     res.json({
-     
       search: query,
       data,
     });

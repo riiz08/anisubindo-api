@@ -31,7 +31,7 @@ app.get("/popular-today", (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 }));
 app.get("/latest-release", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const page = Number(req.query.page);
+    const page = Number(req.query.page) || 1;
     try {
         const data = yield (0, service_1.getLatestRelease)(page);
         res.json(data);
@@ -67,7 +67,7 @@ app.get("/watch/:slug", (req, res) => __awaiter(void 0, void 0, void 0, function
 }));
 app.get("/search", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { query } = yield req.query;
+        const { query } = req.query;
         const data = yield (0, service_1.searchAnime)(query);
         res.json({
             search: query,
